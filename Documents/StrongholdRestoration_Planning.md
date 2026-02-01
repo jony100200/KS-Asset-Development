@@ -276,11 +276,23 @@ Assets/
 - Optimize particle systems
 
 ### **Timeline Slips**
-- Weekly milestones with demos
-- Parallel system development where possible
-- Buffer time for integration testing
 
----
+## ✅ Required Changes & Action Items
+
+These are immediate changes, checks, and deliverables to implement or verify in order to keep the project aligned with the blueprint and packaging goals.
+
+- **KS naming standardization:** finalize naming convention (`KS <Primary> <Descriptor>`) and run the batch rename dry-run. Use `AssetDatabase.MoveAsset` to preserve `.meta` GUIDs.
+- **Scaffold WaveManager:** create `WaveDefinition` SO, `WaveManager` runtime, and an Editor `Wave Editor` window (see todo `Scaffold WaveManager Prototype`).
+- **Editor tooling priority:** implement `Wave Editor`, `VFX Rule Designer`, and `Editor Batch-Rename Tool` in that order to speed iteration and sample creation.
+- **Sample content:** create 3 minimal sample scenes (empty, wave-demo, and build-demo) and sample prefabs (enemy, tower, building) under `Assets/Kalponic Studio/<System>/Samples`.
+- **PlayMode tests:** add basic PlayMode tests for `Health & Combat Core`, `Wave & Threat`, and `Timer` to prevent regressions.
+- **Packaging checklist:** add packaging notes to `Assets/Kalponic Studio/Packaging.md` including versioning, sample scenes, docs, changelog, and Asset Store metadata.
+- **CI / Build guidance:** document dotnet/unity build steps in `README.md` and add a note: when running `dotnet` at repo root pass `-p <solution|project>` or run Unity's CLI build to avoid ambiguous-project errors.
+- **Asset import rules:** add an `Asset Import Validator` to auto-fix common importer settings and enforce sprite atlas usage (replace deprecated TextureImporter fields).
+- **Testing & profiling:** schedule a weekly profiling pass during Phase 1 and add an `ObjectPool` smoke test for spawn heavy scenes.
+- **Documentation & examples:** for each system, create a short `Readme.md` in the system folder with usage steps and a minimal code example.
+
+Mark each item as a tracked todo (see project TODOs) and assign owners before starting implementation.
 
 ## 📝 **Change Log**
 
