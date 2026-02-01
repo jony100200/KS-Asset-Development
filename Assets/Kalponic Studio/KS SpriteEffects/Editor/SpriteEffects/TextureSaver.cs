@@ -95,14 +95,14 @@ namespace KalponicStudio.SpriteEffects
             destination.wrapModeV = source.wrapModeV;
             destination.alphaIsTransparency = source.alphaIsTransparency;
             destination.sRGBTexture = source.sRGBTexture;
-            destination.spritePackingTag = source.spritePackingTag;
+            // destination.spritePackingTag = source.spritePackingTag; // Obsolete: Use SpriteAtlas instead
             destination.spritePivot = source.spritePivot;
             destination.spriteBorder = source.spriteBorder;
             destination.SetTextureSettings(textureSettings);
 
             if (source.spriteImportMode == SpriteImportMode.Multiple)
             {
-                destination.spritesheet = source.spritesheet;
+                // destination.spritesheet = source.spritesheet; // Obsolete: Use ISpriteEditorDataProvider instead
             }
         }
     }

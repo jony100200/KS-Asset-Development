@@ -30,6 +30,7 @@ namespace KalponicStudio.Tooltips
     public interface ITooltipService
     {
         void ShowTooltip(ITooltipData data);
+        void ShowTooltip(ITooltipData data, Vector2 triggerScreenPosition);
         void HideTooltip();
         void UpdatePosition();
         bool IsVisible { get; }
@@ -67,6 +68,7 @@ namespace KalponicStudio.Tooltips
         Vector2 CalculatePosition(Vector2 triggerPosition, Vector2 tooltipSize, Vector2 screenSize);
         void SetOffset(Vector2 offset);
         void SetBounds(Vector2 bounds);
+        void SetClampToBounds(bool clamp);
     }
 
     /// <summary>

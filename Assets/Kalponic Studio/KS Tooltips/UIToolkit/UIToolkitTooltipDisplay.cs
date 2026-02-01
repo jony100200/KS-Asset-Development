@@ -13,6 +13,11 @@ namespace KalponicStudio.Tooltips
         [Tooltip("UIDocument containing the tooltip UI")]
         [SerializeField] private UIDocument uiDocument;
 
+        [Header("Element Names")]
+        [SerializeField] private string containerName = "TooltipContainer";
+        [SerializeField] private string titleName = "TooltipTitle";
+        [SerializeField] private string descriptionName = "TooltipDescription";
+
         // UI elements
         private VisualElement tooltipContainer;
         private Label titleLabel;
@@ -36,7 +41,7 @@ namespace KalponicStudio.Tooltips
                 uiDocument = FindFirstObjectByType<UIDocument>();
                 if (uiDocument == null)
                 {
-                    Debug.LogError("[UIToolkitTooltipDisplay] No UIDocument found in scene!");
+                    TooltipLog.Error("No UIDocument found in scene.", this);
                     return;
                 }
             }
@@ -44,13 +49,13 @@ namespace KalponicStudio.Tooltips
             var root = uiDocument.rootVisualElement;
 
             // Find tooltip elements
-            tooltipContainer = root.Q<VisualElement>("TooltipContainer");
-            titleLabel = root.Q<Label>("TooltipTitle");
-            descriptionLabel = root.Q<Label>("TooltipDescription");
+            tooltipContainer = root.Q<VisualElement>(containerName);
+            titleLabel = root.Q<Label>(titleName);
+            descriptionLabel = root.Q<Label>(descriptionName);
 
             if (tooltipContainer == null)
             {
-                Debug.LogError("[UIToolkitTooltipDisplay] TooltipContainer not found in UI!");
+                TooltipLog.Error("Tooltip container element not found in UI.", this);
                 return;
             }
 
@@ -115,8 +120,15 @@ namespace KalponicStudio.Tooltips
             if (tooltipContainer == null) return;
 
             currentPosition = position;
-            tooltipContainer.style.left = position.x;
-            tooltipContainer.style.top = position.y;
+            var panel = uiDocument != null ? uiDocument.rootVisualElement.panel : null;
+            if (panel == null)
+            {
+                return;
+            }
+
+            Vector2 panelPosition = RuntimePanelUtils.ScreenToPanel(panel, position);
+            tooltipContainer.style.left = panelPosition.x;
+            tooltipContainer.style.top = panelPosition.y;
         }
 
         /// <summary>

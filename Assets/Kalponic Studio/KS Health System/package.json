@@ -1,0 +1,23 @@
+{
+  "name": "com.kalponicstudio.healthcombat",
+  "displayName": "KS Health & Combat System",
+  "version": "1.0.0",
+  "unity": "2020.3",
+  "description": "Comprehensive health, shield, status effects, and combat system for Unity games. Includes visual effects, UI components, and save/load functionality.",
+  "keywords": ["health", "combat", "shield", "status effects", "ui", "damage"],
+  "category": "Game Tool",
+  "dependencies": {},
+  "author": {
+    "name": "Kalponic Studio",
+    "email": "support@kalponicstudio.com",
+    "url": "https://www.kalponicstudio.com"
+  },
+  "license": "See LICENSE.md",
+  "samples": [
+    {
+      "displayName": "Basic Setup Examples",
+      "description": "Simple examples showing how to set up health systems on characters",
+      "path": "Examples~"
+    }
+  ]
+}

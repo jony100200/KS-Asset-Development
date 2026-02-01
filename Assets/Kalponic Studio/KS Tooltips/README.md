@@ -1,43 +1,64 @@
 # KS Tooltip System
 
-A clean, SOLID, game-agnostic tooltip system for Unity that follows KISS principles.
+A clean, SOLID, game-agnostic tooltip system for Unity with modular UGUI and UI Toolkit support.
 
-## 🎯 Design Principles
+## Design Goals
 
-- **KISS**: Keep it simple - minimal interfaces, clear responsibilities
-- **SOLID**: Single responsibility, open/closed, dependency inversion
-- **Game-Agnostic**: Works with any game type or UI framework
-- **Dependency Injection**: No singletons, maximum testability
+- KISS: minimal interfaces, clear responsibilities
+- SOLID: SRP and dependency inversion
+- Game-agnostic: works with any game type or UI framework
+- Testable: no singletons, easy to mock
 
-## 🏗️ Architecture
+## Compatibility
 
-### Core Components
+- Primary: Unity 6.3 LTS
+- Optional: Unity 2022.3 LTS (supported if your project already uses it)
 
-- **`ITooltipData`**: Data contract for tooltip content
-- **`ITooltipService`**: Main service interface
-- **`ITooltipDisplay`**: UI framework abstraction
-- **`ITooltipPositioner`**: Positioning logic abstraction
-- **`TooltipConfig`**: Configuration data
+## Architecture
 
-### Concrete Implementations
+Core interfaces and data:
 
-- **`TooltipData`**: ScriptableObject for tooltip content
-- **`TooltipManager`**: Main service implementation
-- **`UIToolkitTooltipDisplay`**: UI Toolkit display implementation
-- **`MouseFollowPositioner`**: Mouse-following positioner
-- **`TooltipTrigger`**: Generic trigger component
+- `ITooltipData`
+- `ITooltipService`
+- `ITooltipDisplay`
+- `ITooltipPositioner`
+- `TooltipConfig`
 
-## 🚀 Quick Setup
+Concrete implementations:
 
-1. **Create TooltipManager** in your scene
-2. **Add UIToolkitTooltipDisplay** component to the same GameObject
-3. **Create UIDocument** with tooltip UI elements
-4. **Create TooltipData** assets for your content
-5. **Attach TooltipTrigger** to UI elements that need tooltips
+- `TooltipData` (ScriptableObject)
+- `TooltipManager` (service implementation)
+- `MouseFollowPositioner`
+- `UGUITooltipDisplay` + `TooltipTrigger` (UGUI)
+- `UIToolkitTooltipDisplay` + `UIToolkitTooltipTrigger` (UI Toolkit)
 
-### Required UI Structure
+## Assemblies
 
-Your UIDocument must contain:
+- `KalponicStudio.Tooltips.Core`
+- `KalponicStudio.Tooltips.UGUI`
+- `KalponicStudio.Tooltips.UIToolkit`
+
+## Quick Setup (UGUI)
+
+1. Create a GameObject and add `TooltipManager`.
+2. Add `UGUITooltipDisplay` on the tooltip UI root.
+3. Assign:
+   - `tooltipRoot` (RectTransform)
+   - `titleText` and `descriptionText` (TMP_Text)
+   - Optional: `backgroundImage`, `layoutElement`, `canvas`
+4. Add `TooltipTrigger` to any UI element with a `Graphic` or `Selectable`.
+5. Assign a `TooltipData` asset to the trigger.
+
+Notes:
+- This implementation uses TextMeshPro. Add the TMP package if not already in the project.
+- Works best with Screen Space Overlay canvas, but Screen Space Camera is supported.
+
+## Quick Setup (UI Toolkit)
+
+1. Create a GameObject and add `TooltipManager`.
+2. Add `UIToolkitTooltipDisplay` and assign the `UIDocument`.
+3. Ensure your UXML contains the required elements:
+
 ```xml
 <VisualElement name="TooltipContainer">
     <Label name="TooltipTitle" />
@@ -45,25 +66,30 @@ Your UIDocument must contain:
 </VisualElement>
 ```
 
-## 📝 Usage Examples
+4. Add `UIToolkitTooltipTrigger` and assign:
+   - `UIDocument`
+   - `targetElementName` (name of the VisualElement)
+   - `TooltipData`
 
-### Basic Setup
+Notes:
+- The tooltip container should be positioned absolute in USS.
+- Element names are configurable on `UIToolkitTooltipDisplay`.
+
+## Runtime Usage
+
 ```csharp
-// Create tooltip data
-var tooltipData = TooltipData.CreateRuntime("My Title", "My description");
-
-// Attach to GameObject
-var trigger = gameObject.AddComponent<TooltipTrigger>();
-trigger.SetTooltipData(tooltipData);
+var tooltipData = TooltipData.CreateRuntime("Title", "Description");
+tooltipManager.ShowTooltip(tooltipData);
 ```
 
-### Custom Configuration
+## Custom Configuration
+
 ```csharp
 var config = new TooltipConfig
 {
-    ShowDelay = 1.0f,
-    HideDelay = 0.3f,
-    Offset = new Vector2(15, 15),
+    ShowDelay = 0.4f,
+    HideDelay = 0.2f,
+    Offset = new Vector2(12f, 12f),
     FollowMouse = true,
     ClampToScreen = true
 };
@@ -71,43 +97,40 @@ var config = new TooltipConfig
 tooltipManager.UpdateConfiguration(config);
 ```
 
-## 🔧 Extension Points
+## Extension Points
 
-### Custom Display Implementation
+Custom display:
+
 ```csharp
-public class CustomTooltipDisplay : MonoBehaviour, ITooltipDisplay
+public class CustomDisplay : MonoBehaviour, ITooltipDisplay
 {
-    // Implement interface methods
-    public void ShowTooltip(ITooltipData data, Vector2 position) { /* ... */ }
-    // ...
+    public void ShowTooltip(ITooltipData data, Vector2 position) { }
+    public void HideTooltip() { }
+    public void UpdatePosition(Vector2 position) { }
+    public bool IsVisible => false;
+    public Vector2 GetTooltipSize() => Vector2.zero;
 }
 ```
 
-### Custom Positioner
+Custom positioner:
+
 ```csharp
 public class AnchoredPositioner : ITooltipPositioner
 {
-    // Implement positioning logic
-    public Vector2 CalculatePosition(Vector2 trigger, Vector2 size, Vector2 screen) { /* ... */ }
-    // ...
+    public Vector2 CalculatePosition(Vector2 trigger, Vector2 size, Vector2 screen) => trigger;
+    public void SetOffset(Vector2 offset) { }
+    public void SetBounds(Vector2 bounds) { }
+    public void SetClampToBounds(bool clamp) { }
 }
 ```
 
-## ✅ Benefits
+## Troubleshooting
 
-- **Framework Agnostic**: Works with UI Toolkit, UGUI, IMGUI, or custom UI
-- **Testable**: Dependency injection makes unit testing easy
-- **Extensible**: Easy to add new display or positioning strategies
-- **Performance**: Minimal overhead, efficient updates
-- **Clean Code**: Follows SOLID principles and clean architecture
-
-## 🐛 Troubleshooting
-
-- **Tooltips not showing**: Ensure UIToolkitTooltipDisplay is in scene
-- **UI not found**: Check UIDocument has correct element names
-- **Positioning issues**: Verify UI is in Screen Space Overlay mode
+- Tooltip not showing (UGUI): ensure `TooltipTrigger` is on a UI element with raycast target enabled.
+- Tooltip not showing (UI Toolkit): check `targetElementName` and UXML element names.
+- Position looks wrong: ensure UI Toolkit tooltip container uses absolute positioning.
+- Null references: verify `UIDocument` or `Canvas` references are assigned.
 
 ---
 
-**Made with ❤️ by Kalponic Studio**</content>
-<parameter name="filePath">f:\Unity Workplace\Anomaly Directive\Assets\Plugins\KS Tooltips\README.md
+Made by Kalponic Studio

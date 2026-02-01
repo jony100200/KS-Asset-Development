@@ -13,6 +13,10 @@ namespace KalponicStudio.Tooltips
         [Tooltip("Tooltip behavior settings")]
         [SerializeField] private TooltipConfig config = new TooltipConfig();
 
+        [Header("Dependencies")]
+        [Tooltip("Tooltip display implementation (optional - will find automatically)")]
+        [SerializeField] private MonoBehaviour displayComponent;
+
         // Dependencies - injected or found automatically
         private ITooltipDisplay display;
         private ITooltipPositioner positioner;
@@ -34,7 +38,7 @@ namespace KalponicStudio.Tooltips
         private void Update()
         {
             HandleTooltipTiming();
-            UpdateTooltipPosition();
+            UpdateTooltipPosition(false);
         }
 
         /// <summary>
@@ -43,12 +47,20 @@ namespace KalponicStudio.Tooltips
         /// </summary>
         protected virtual void InitializeDependencies()
         {
-            // Try to find display implementation in scene
-            display = FindFirstObjectByType<UIToolkitTooltipDisplay>();
+            if (displayComponent != null && displayComponent is ITooltipDisplay typedDisplay)
+            {
+                display = typedDisplay;
+                return;
+            }
+            else if (displayComponent != null)
+            {
+                TooltipLog.Warning("Assigned display component does not implement ITooltipDisplay.", this);
+            }
 
+            display = FindDisplayInScene();
             if (display == null)
             {
-                Debug.LogWarning("[TooltipManager] No UIToolkitTooltipDisplay found in scene. Tooltips will not be displayed.");
+                TooltipLog.Warning("No tooltip display found in scene. Tooltips will not be displayed.", this);
                 enabled = false;
             }
         }
@@ -59,11 +71,7 @@ namespace KalponicStudio.Tooltips
         private void InitializePositioner()
         {
             positioner = new MouseFollowPositioner();
-            positioner.SetOffset(config.Offset);
-            if (config.ClampToScreen)
-            {
-                positioner.SetBounds(new Vector2(Screen.width, Screen.height));
-            }
+            ApplyConfigToPositioner();
         }
 
         /// <summary>
@@ -85,13 +93,13 @@ namespace KalponicStudio.Tooltips
         /// <summary>
         /// Updates tooltip position if following mouse.
         /// </summary>
-        private void UpdateTooltipPosition()
+        private void UpdateTooltipPosition(bool force)
         {
-            if (!config.FollowMouse || display == null || !display.IsVisible || positioner == null) return;
+            if ((!config.FollowMouse && !force) || display == null || !display.IsVisible || positioner == null) return;
 
-            Vector2 mousePos = Input.mousePosition;
+            Vector2 basePosition = config.FollowMouse ? Input.mousePosition : currentTriggerPosition;
             Vector2 tooltipSize = display.GetTooltipSize();
-            Vector2 newPosition = positioner.CalculatePosition(mousePos, tooltipSize, new Vector2(Screen.width, Screen.height));
+            Vector2 newPosition = positioner.CalculatePosition(basePosition, tooltipSize, new Vector2(Screen.width, Screen.height));
 
             display.UpdatePosition(newPosition);
         }
@@ -101,13 +109,27 @@ namespace KalponicStudio.Tooltips
         /// </summary>
         public void ShowTooltip(ITooltipData data)
         {
+            BeginShow(data, Input.mousePosition);
+        }
+
+        /// <summary>
+        /// Shows tooltip for the specified data using an explicit trigger position.
+        /// </summary>
+        public void ShowTooltip(ITooltipData data, Vector2 triggerScreenPosition)
+        {
+            BeginShow(data, triggerScreenPosition);
+        }
+
+        private void BeginShow(ITooltipData data, Vector2 triggerScreenPosition)
+        {
             if (data == null || !data.HasContent)
             {
-                Debug.LogWarning("[TooltipManager] Attempted to show tooltip with null or empty data");
+                TooltipLog.Warning("Attempted to show tooltip with null or empty data.", this);
                 return;
             }
 
             currentTooltipData = data;
+            currentTriggerPosition = triggerScreenPosition;
             hoverStartTime = Time.time;
             isHovering = true;
             shouldHide = false;
@@ -170,6 +192,7 @@ namespace KalponicStudio.Tooltips
         public void UpdateConfiguration(TooltipConfig newConfig)
         {
             config = newConfig;
+            ApplyConfigToPositioner();
         }
 
         /// <summary>
@@ -177,12 +200,84 @@ namespace KalponicStudio.Tooltips
         /// </summary>
         public void UpdatePosition()
         {
-            UpdateTooltipPosition();
+            UpdateTooltipPosition(true);
         }
 
         /// <summary>
         /// Whether the tooltip is currently visible.
         /// </summary>
         public bool IsVisible => display != null && display.IsVisible;
+
+        /// <summary>
+        /// Injects a display implementation at runtime.
+        /// </summary>
+        public void SetDisplay(ITooltipDisplay newDisplay)
+        {
+            display = newDisplay;
+        }
+
+        /// <summary>
+        /// Injects a positioner implementation at runtime.
+        /// </summary>
+        public void SetPositioner(ITooltipPositioner newPositioner)
+        {
+            positioner = newPositioner;
+            ApplyConfigToPositioner();
+        }
+
+        private void ApplyConfigToPositioner()
+        {
+            if (positioner == null)
+            {
+                return;
+            }
+
+            positioner.SetOffset(config.Offset);
+            positioner.SetBounds(new Vector2(Screen.width, Screen.height));
+            positioner.SetClampToBounds(config.ClampToScreen);
+        }
+
+        private static ITooltipDisplay FindDisplayInScene()
+        {
+            var behaviours = FindObjectsByType<MonoBehaviour>(FindObjectsInactive.Exclude, FindObjectsSortMode.None);
+            for (int i = 0; i < behaviours.Length; i++)
+            {
+                if (behaviours[i] is ITooltipDisplay displayBehaviour)
+                {
+                    return displayBehaviour;
+                }
+            }
+
+            return null;
+        }
+    }
+
+    public static class TooltipLog
+    {
+        private const string Category = "Tooltips";
+
+        public static void Warning(string message, Object context = null)
+        {
+            if (context != null)
+            {
+                Debug.LogWarning($"[KS][{Category}] {message}", context);
+            }
+            else
+            {
+                Debug.LogWarning($"[KS][{Category}] {message}");
+            }
+        }
+
+        public static void Error(string message, Object context = null)
+        {
+            if (context != null)
+            {
+                Debug.LogError($"[KS][{Category}] {message}", context);
+            }
+            else
+            {
+                Debug.LogError($"[KS][{Category}] {message}");
+            }
+        }
     }
 }

@@ -1,53 +1,210 @@
-# KS Health System (Pro) - Modular Vitality Framework
+# KS Health & Combat System - Complete Character State Framework
 
-Updated: January 31, 2026
+**Version 1.0.0** | Updated: January 31, 2026
 
-This system provides modular health, shields, status effects, visuals, and UI for many game types.
-Use only what you need. Wire with C# events or UnityEvents.
-
----
-
-## 1) What is included
-
-Core
-- Health (damage, heal, regen, invulnerability, mitigation)
-- Damage types and resistances
-- Shield absorption (optional)
-- Downed / revive state (optional)
-
-Status
-- Poison, regeneration, speed boost
-- Stacking modes: refresh, extend, stack
-
-Events
-- C# events for code
-- UnityEvents for Inspector
-- Optional ScriptableObject event channel
-
-UI and Visuals (optional)
-- Health bar, text, icon, controller, manager
-- Screen flash, tint, shake, particles, audio, low-health warning
-
-Profiles
-- HealthProfileSO for plug-and-play presets
+A comprehensive, modular system for managing character health, shields, status effects, combat mechanics, and visual feedback in Unity games. Perfect for action, RPG, and combat-focused games.
 
 ---
 
-## 1.5) Recent updates
+## 🎯 What Makes This Special
 
-- Damage types + mitigation (flat/percent + resistances)
-- Downed / revive state with events
-- Status effect stacking rules
-- HealthProfileSO presets
-- C# events as primary API (UnityEvents still available)
+**Complete Character State Management:**
+- Health with damage/healing/regeneration
+- Shield absorption system
+- Status effects (buffs/debuffs)
+- Invulnerability mechanics
+- Downed/revive states
+
+**Advanced Combat Features:**
+- Damage type resistances
+- Team-based damage rules
+- Damage routing system
+- Friendly fire controls
+
+**Rich Visual Feedback:**
+- Screen effects (flash, shake, particles)
+- Sprite tinting and animations
+- Audio integration
+- Low-health warnings
+
+**Professional UI System:**
+- Health bars, text displays, icons
+- World-space and screen-space options
+- Animated transitions
+- Boss health displays
+
+**Save/Load Support:**
+- JSON serialization
+- State snapshots (health/shield/status)
+- Versioned snapshots with basic validation
 
 ---
 
-## 2) Quick Start (minimal setup)
+## 📦 What's Included
 
-1) Add `HealthSystem` to your player/enemy.
-2) (Optional) Add `ShieldSystem`, `StatusEffectSystem`, `HealthVisualSystem`.
-3) (Optional) Add `HealthUIController` and UI components from `Runtime/UI/`.
+### Core Systems
+- **HealthSystem**: Core vitality management with advanced features
+- **ShieldSystem**: Damage absorption with regeneration
+- **StatusEffectSystem**: Buffs/debuffs with stacking rules
+- **HealthVisualSystem**: Visual feedback and effects
+
+### UI Components
+- **HealthBar**: Animated health progress bars
+- **HealthText**: Numerical health displays
+- **HealthIcon**: Visual health indicators
+- **BossHealthBar**: Special boss health displays
+- **WorldSpaceHealthBar**: 3D world-positioned bars
+
+### Combat Extensions
+- **DamageRouter**: Team-based damage handling
+- **TeamComponent**: Faction and team management
+- **DamageRules**: Combat relationship logic
+
+### Persistence
+- **HealthSnapshotComponent**: Save/load functionality
+- **HealthSnapshot**: Serializable state data
+
+### Utilities
+- **HealthProfileSO**: Configuration presets
+- **HealthEventChannelSO**: Decoupled event system
+- **PlayMode tests for core systems**
+
+---
+
+## 🚀 Quick Start (3 Minutes)
+
+1. **Add to Player:**
+   ```csharp
+   // Attach HealthSystem to your player
+   HealthSystem health = player.AddComponent<HealthSystem>();
+   health.SetMaxHealth(100);
+   ```
+
+2. **Add Visual Feedback:**
+   ```csharp
+   // Add visual effects
+   player.AddComponent<HealthVisualSystem>();
+   ```
+
+3. **Add UI (Optional):**
+   ```csharp
+   // Create UI canvas and add components
+   HealthUIController ui = player.AddComponent<HealthUIController>();
+   // Connect UI elements in Inspector
+   ```
+
+4. **Combat Ready:**
+   ```csharp
+   // Deal damage
+   health.TakeDamage(25);
+
+   // Apply status effect
+   statusSystem.ApplyPoison(5f, 2); // 5 seconds, 2 damage/sec
+   ```
+
+---
+
+## 🎮 Advanced Features
+
+### Damage Types & Mitigation
+```csharp
+// Set up damage resistances
+DamageResistance[] resistances = new DamageResistance[] {
+    new DamageResistance(DamageType.Fire, 0.5f), // 50% fire resistance
+    new DamageResistance(DamageType.Poison, 1f)  // 100% poison immunity
+};
+health.ConfigureMitigation(5f, 0.1f, resistances); // 5 flat + 10% reduction
+```
+
+### Team Combat
+```csharp
+// Set up teams
+TeamComponent teamA = playerA.AddComponent<TeamComponent>();
+teamA.TeamId = 1;
+
+TeamComponent teamB = playerB.AddComponent<TeamComponent>();
+teamB.TeamId = 2;
+
+// Damage only applies between different teams
+damageRouter.ApplyDamage(damageInfo, sourceInfo);
+```
+
+### Save/Load System
+```csharp
+// Save state
+HealthSnapshot snapshot = snapshotComponent.CaptureSnapshot();
+string json = snapshot.ToJson();
+PlayerPrefs.SetString("PlayerHealth", json);
+
+// Load state
+string json = PlayerPrefs.GetString("PlayerHealth");
+HealthSnapshot snapshot = HealthSnapshot.FromJson(json);
+snapshotComponent.RestoreSnapshot(snapshot);
+```
+
+---
+
+## 📋 System Requirements
+
+- **Unity Version**: 2020.3 or later
+- **Platforms**: All Unity platforms supported
+- **Dependencies**: None (uses only Unity core modules)
+
+---
+
+## 🏗️ Architecture
+
+**Layered Folders:**
+- **Core**: Health, shields, status effects (MonoBehaviours)
+- **Visuals**: Visual feedback system
+- **UI**: Display components and controller
+- **Extensions**: Optional combat, persistence, and world-space UI
+
+**Event-Driven:**
+- C# events for programmatic control
+- UnityEvents for Inspector wiring
+- Optional ScriptableObject event channels
+
+---
+
+## 📚 Documentation
+
+Most components include tooltips and summary comments. Key classes:
+
+- `HealthSystem`: Core health management
+- `ShieldSystem`: Damage absorption
+- `StatusEffectSystem`: Buff/debuff management
+- `HealthSnapshotComponent`: Persistence
+- `DamageRouter`: Combat routing
+
+---
+
+## 🧪 Testing
+
+Includes PlayMode tests covering:
+- Health and shield interactions
+- Event/channel firing
+- Damage mitigation basics
+- Low-health visual toggling
+
+---
+
+## 📄 License & Support
+
+**License**: See LICENSE.md
+**Support**: support@kalponicstudio.com
+**Website**: https://www.kalponicstudio.com
+
+---
+
+## 🎯 Perfect For
+
+- Action games with combat
+- RPGs with status effects
+- Battle royales with shields
+- Platformers with health systems
+- Any game needing character state management
+
 4) (Optional) Create a `HealthProfileSO` and apply it at runtime or in a setup script.
 
 That is enough to be fully functional.
@@ -379,7 +536,7 @@ The persistence extension now supports comprehensive state capture and restorati
 - **JSON Serialization**: Easy save/load to files or PlayerPrefs
 - **Complete State Capture**: Health, shields, status effects, resistances, regeneration settings
 - **Transform Data**: Optional position/rotation saving
-- **Metadata**: Entity name, tags, and custom data
+- **Metadata**: Entity name and tag (optional)
 - **Validation**: Automatic data integrity checks and repair
 
 ### Usage

@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.UIElements;
 using UnityEngine.EventSystems;
 
 namespace KalponicStudio.Tooltips
@@ -16,11 +15,18 @@ namespace KalponicStudio.Tooltips
         [SerializeField] private TooltipData tooltipData;
 
         [Tooltip("Tooltip service to use (optional - will find automatically)")]
-        [SerializeField] private TooltipManager tooltipService;
+        [SerializeField] private MonoBehaviour tooltipServiceComponent;
+
+        private ITooltipService tooltipService;
 
         private void Awake()
         {
             // Find tooltip service if not assigned
+            if (tooltipServiceComponent != null)
+            {
+                tooltipService = tooltipServiceComponent as ITooltipService;
+            }
+
             if (tooltipService == null)
             {
                 tooltipService = FindFirstObjectByType<TooltipManager>();
@@ -34,7 +40,7 @@ namespace KalponicStudio.Tooltips
         {
             if (tooltipService != null && tooltipData != null)
             {
-                tooltipService.ShowTooltip(tooltipData);
+                tooltipService.ShowTooltip(tooltipData, eventData.position);
             }
         }
 
@@ -71,6 +77,14 @@ namespace KalponicStudio.Tooltips
         /// Useful for testing or custom setups.
         /// </summary>
         public void SetTooltipService(TooltipManager service)
+        {
+            tooltipService = service;
+        }
+
+        /// <summary>
+        /// Sets the tooltip service at runtime.
+        /// </summary>
+        public void SetTooltipService(ITooltipService service)
         {
             tooltipService = service;
         }

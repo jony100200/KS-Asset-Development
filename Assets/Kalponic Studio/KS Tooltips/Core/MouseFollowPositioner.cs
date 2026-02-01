@@ -21,9 +21,12 @@ namespace KalponicStudio.Tooltips
 
             if (clampToBounds)
             {
+                Vector2 clampBounds = screenSize.sqrMagnitude > 0f ? screenSize : bounds;
                 // Keep tooltip within screen bounds
-                position.x = Mathf.Clamp(position.x, 0, screenSize.x - tooltipSize.x);
-                position.y = Mathf.Clamp(position.y, tooltipSize.y, screenSize.y);
+                float maxX = Mathf.Max(0f, clampBounds.x - tooltipSize.x);
+                float maxY = Mathf.Max(0f, clampBounds.y - tooltipSize.y);
+                position.x = Mathf.Clamp(position.x, 0, maxX);
+                position.y = Mathf.Clamp(position.y, 0, maxY);
             }
 
             return position;
@@ -43,6 +46,14 @@ namespace KalponicStudio.Tooltips
         public void SetBounds(Vector2 newBounds)
         {
             bounds = newBounds;
+        }
+
+        /// <summary>
+        /// Enables or disables clamping to bounds.
+        /// </summary>
+        public void SetClampToBounds(bool clamp)
+        {
+            clampToBounds = clamp;
         }
     }
 }

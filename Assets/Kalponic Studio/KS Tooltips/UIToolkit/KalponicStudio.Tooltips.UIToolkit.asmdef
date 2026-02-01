@@ -1,7 +1,8 @@
 {
-    "name": "KalponicStudio.Tooltips",
+    "name": "KalponicStudio.Tooltips.UIToolkit",
     "rootNamespace": "KalponicStudio.Tooltips",
     "references": [
+        "KalponicStudio.Tooltips.Core",
         "UnityEngine.UIElements"
     ],
     "includePlatforms": [],
