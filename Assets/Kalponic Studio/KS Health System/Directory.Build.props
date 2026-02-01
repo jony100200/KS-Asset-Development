@@ -1,0 +1,7 @@
+{
+  "Settings": {
+    "Directory.Build.Props": {
+      "LangVersion": "9.0"
+    }
+  }
+}

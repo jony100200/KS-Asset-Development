@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RuleSet Name="KS Health System Rules" Description="Code analysis rules for KS Health System" ToolsVersion="17.0">
+  <Rules AnalyzerId="Microsoft.CodeAnalysis.CSharp" RuleNamespace="Microsoft.CodeAnalysis.CSharp">
+    <Rule Id="CS1591" Action="Warning" /> <!-- Missing XML comment for publicly visible type or member -->
+  </Rules>
+
+  <Rules AnalyzerId="Microsoft.CodeQuality.Analyzers" RuleNamespace="Microsoft.CodeQuality.Analyzers">
+    <Rule Id="CA1062" Action="Warning" /> <!-- Validate arguments of public methods -->
+    <Rule Id="CA2200" Action="Warning" /> <!-- Rethrow to preserve stack details -->
+  </Rules>
+
+  <!-- Unity Analyzer Rules (if Unity Roslyn Analyzers package is installed) -->
+  <Rules AnalyzerId="Unity.Analyzers" RuleNamespace="Unity.Analyzers">
+    <Rule Id="UNT0001" Action="Warning" /> <!-- Empty Unity message -->
+    <Rule Id="UNT0002" Action="Warning" /> <!-- Missing SerializeField for public field -->
+    <Rule Id="UNT0006" Action="None" /> <!-- Incorrect Unity message signature (custom signatures allowed) -->
+  </Rules>
+</RuleSet>

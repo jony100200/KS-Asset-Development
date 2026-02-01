@@ -1,0 +1,10 @@
+﻿<Solution>
+  <Project Path="KalponicStudio.SO_Framework.csproj" />
+  <Project Path="KalponicStudio.KS_Utilities.csproj" />
+  <Project Path="Assembly-CSharp.csproj" />
+  <Project Path="Assembly-CSharp-Editor.csproj" />
+  <Project Path="KalponicStudio.HealthSystem.csproj" />
+  <Project Path="KalponicStudio.Tooltips.csproj" />
+  <Project Path="KalponicStudio.HealthSystem.Extensions.csproj" />
+  <Project Path="KalponicStudio.HealthSystem.Tests.PlayMode.csproj" />
+</Solution>

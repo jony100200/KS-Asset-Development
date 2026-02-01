@@ -1,0 +1,29 @@
+# KS Health System - Global Analyzer Configuration
+# Configures Roslyn analyzers for code quality and consistency
+
+is_global = true
+
+# Style preferences
+dotnet_style_require_accessibility_modifiers = always:warning
+dotnet_style_readonly_field = true:warning
+dotnet_code_quality_unused_parameters = all:warning
+
+# Documentation rules
+dotnet_diagnostic.CS1591.severity = warning
+
+# Performance rules
+dotnet_diagnostic.CA1822.severity = warning  # Mark members as static
+dotnet_diagnostic.CA1825.severity = warning  # Avoid zero-length array allocations
+dotnet_diagnostic.CA1859.severity = warning  # Use concrete types for performance
+
+# Reliability rules
+dotnet_diagnostic.CA2000.severity = warning  # Dispose objects before losing scope
+dotnet_diagnostic.CA2200.severity = warning  # Rethrow to preserve stack details
+
+# Maintainability rules
+dotnet_diagnostic.CA1507.severity = warning  # Use nameof instead of string
+dotnet_diagnostic.CA2201.severity = warning  # Do not raise reserved exception types
+
+# Unity-specific rules (when available)
+# These would be enabled if using Unity's Roslyn analyzers package
+# unity_analyzer_diagnostic_001.severity = warning

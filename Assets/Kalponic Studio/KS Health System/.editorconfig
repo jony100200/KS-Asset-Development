@@ -1,0 +1,76 @@
+# KS Health System - Code Quality Configuration
+# Follows C# coding standards and Unity best practices
+
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+indent_style = space
+indent_size = 4
+
+[*.cs]
+csharp_style_expression_bodied_methods = when_on_single_line:suggestion
+csharp_style_expression_bodied_properties = when_on_single_line:suggestion
+csharp_style_expression_bodied_indexers = when_on_single_line:suggestion
+csharp_style_expression_bodied_accessors = when_on_single_line:suggestion
+
+# Code style preferences
+csharp_prefer_braces = true:suggestion
+csharp_prefer_simple_using_statement = true:suggestion
+csharp_style_namespace_declarations = file_scoped:suggestion
+csharp_style_prefer_method_group_conversion = true:suggestion
+
+# Naming conventions
+dotnet_naming_rule.private_members_with_underscore.symbols = private_fields
+dotnet_naming_rule.private_members_with_underscore.style = prefix_underscore
+dotnet_naming_rule.private_members_with_underscore.severity = suggestion
+
+dotnet_naming_symbols.private_fields.applicable_kinds = field
+dotnet_naming_symbols.private_fields.applicable_accessibilities = private
+
+dotnet_naming_style.prefix_underscore.capitalization = camel_case
+dotnet_naming_style.prefix_underscore.required_prefix = _
+
+# Unity-specific preferences
+dotnet_diagnostic.UNT0001.severity = warning    # Empty Unity message
+dotnet_diagnostic.UNT0002.severity = warning    # Missing SerializeField for public field
+dotnet_diagnostic.UNT0003.severity = warning    # Inconsistent naming for public fields
+dotnet_diagnostic.UNT0004.severity = warning    # Missing [Tooltip] for public fields
+dotnet_diagnostic.UNT0005.severity = warning    # Missing [Range] for float/int fields
+dotnet_diagnostic.UNT0006.severity = warning    # Incorrect Unity message signature
+dotnet_diagnostic.UNT0007.severity = warning    # Missing [ContextMenu] for public methods
+dotnet_diagnostic.UNT0008.severity = warning    # Unused Unity method
+dotnet_diagnostic.UNT0009.severity = warning    # Missing [Header] for serialized fields
+dotnet_diagnostic.UNT0010.severity = warning   # Missing [FormerlySerializedAs] for renamed fields
+dotnet_diagnostic.UNT0011.severity = warning   # Invalid layer parameter
+dotnet_diagnostic.UNT0012.severity = warning   # Missing [CreateAssetMenu] for ScriptableObjects
+dotnet_diagnostic.UNT0013.severity = warning   # Missing [Serializable] for Unity-serialized structs
+dotnet_diagnostic.UNT0014.severity = warning   # Missing [PreferBinarySerialization] for Unity-serialized structs
+dotnet_diagnostic.UNT0015.severity = warning   # Missing [SerializeReference] for polymorphic fields
+dotnet_diagnostic.UNT0016.severity = warning   # Incorrect Unity tag parameter
+dotnet_diagnostic.UNT0017.severity = warning   # SetPixels32 is obsolete
+dotnet_diagnostic.UNT0018.severity = warning   # Invalid Unity version define
+dotnet_diagnostic.UNT0019.severity = warning   # Missing [Preserve] for reflection
+dotnet_diagnostic.UNT0020.severity = warning   # Missing [Multiline] for TextArea
+dotnet_diagnostic.UNT0021.severity = warning   # Missing [NonReorderable] for arrays
+dotnet_diagnostic.UNT0022.severity = warning   # Missing [ContextMenuItem] for context menu items
+dotnet_diagnostic.UNT0023.severity = warning   # Missing [Delayed] for expensive fields
+dotnet_diagnostic.UNT0024.severity = warning   # Missing [Min] for float/int fields
+dotnet_diagnostic.UNT0025.severity = warning   # Missing [ColorUsage] for Color fields
+dotnet_diagnostic.UNT0026.severity = warning   # Missing [GradientUsage] for Gradient fields
+
+# General C# code quality
+dotnet_diagnostic.CS0618.severity = warning    # Obsolete members
+dotnet_diagnostic.CS0649.severity = warning    # Field never assigned to
+dotnet_diagnostic.CS0169.severity = warning    # Private field never used
+dotnet_diagnostic.CS0219.severity = warning    # Variable assigned but never used
+dotnet_diagnostic.CS0414.severity = warning    # Field assigned but never used
+
+# Documentation
+dotnet_diagnostic.CS1591.severity = warning    # Missing XML comment for public type/member
+
+# Unity-specific suppressions (where we intentionally deviate)
+dotnet_diagnostic.UNT0006.severity = none      # We use custom message signatures
+dotnet_diagnostic.UNT0007.severity = none      # ContextMenu is optional for public methods
+dotnet_diagnostic.UNT0009.severity = none      # Headers are optional for organization
